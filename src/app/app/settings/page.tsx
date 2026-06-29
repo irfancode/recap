@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { Settings, Database, Sparkles, Download, Upload, Trash2 } from "lucide-react"
+import { Settings, Database, Sparkles, Download, Upload, Palette } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import { useAccent, accentThemes } from "@/lib/accent-theme"
 import { toast } from "sonner"
 
 export default function SettingsPage() {
@@ -90,6 +92,19 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-6 max-w-2xl">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Palette className="h-4 w-4" />
+              Accent Color
+            </CardTitle>
+            <CardDescription>Choose your accent color theme</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AccentPicker />
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -214,6 +229,34 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  )
+}
+
+function AccentPicker() {
+  const { accent, setAccent } = useAccent()
+
+  return (
+    <div className="flex flex-wrap gap-3">
+      {accentThemes.map((t) => (
+        <button
+          key={t.id}
+          onClick={() => setAccent(t.id)}
+          className={cn(
+            "flex flex-col items-center gap-1.5 p-2 rounded-lg border-2 transition-all",
+            accent === t.id
+              ? "border-primary bg-primary/5"
+              : "border-transparent hover:border-border"
+          )}
+          title={t.label}
+        >
+          <div
+            className="h-8 w-8 rounded-full ring-2 ring-offset-2 ring-offset-background"
+            style={{ backgroundColor: t.color }}
+          />
+          <span className="text-[10px] font-medium text-muted-foreground">{t.label}</span>
+        </button>
+      ))}
     </div>
   )
 }

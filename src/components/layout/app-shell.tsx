@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
+import { useAccent, accentThemes } from "@/lib/accent-theme"
 
 const navItems = [
   { href: "/app", label: "All Bookmarks", icon: Bookmark },
@@ -38,6 +39,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { data: session } = useSession()
   const { theme, setTheme } = useTheme()
+  const { accent, setAccent } = useAccent()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mounted, setMounted] = useState(false)
 
@@ -121,6 +123,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 )}
                 <span>{mounted && theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
               </button>
+              <div className="flex items-center gap-1 px-3 py-1">
+                {accentThemes.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setAccent(t.id)}
+                    className={cn(
+                      "h-5 w-5 rounded-full transition-all",
+                      accent === t.id ? "ring-2 ring-primary ring-offset-1 ring-offset-background scale-110" : "opacity-60 hover:opacity-100"
+                    )}
+                    style={{ backgroundColor: t.color }}
+                    title={t.label}
+                  />
+                ))}
+              </div>
               <button
                 onClick={() => signOut()}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors w-full"
