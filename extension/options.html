@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Recap Settings</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; padding: 40px; max-width: 500px; margin: 0 auto; }
+    h1 { font-size: 24px; }
+    label { display: block; margin-top: 16px; font-weight: 500; font-size: 14px; }
+    input { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-top: 4px; box-sizing: border-box; }
+    .btn { margin-top: 24px; padding: 10px 24px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; background: #6366f1; color: white; }
+    .btn:hover { background: #5558e6; }
+    .status { margin-top: 12px; font-size: 13px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <h1>Recap Settings</h1>
+  <label>Server URL</label>
+  <input type="url" id="serverUrl" placeholder="http://localhost:3000">
+  <label>API Key (optional)</label>
+  <input type="password" id="apiKey" placeholder="Leave blank for same-origin">
+  <button class="btn" id="saveBtn">Save Settings</button>
+  <p class="status" id="status"></p>
+  <script src="options.js"></script>
+</body>
+</html>

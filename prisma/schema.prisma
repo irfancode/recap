@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  collections   Collection[]
+  bookmarks     Bookmark[]
+  tags          Tag[]
+  aiSettings    AiSettings?
+}
+
+model Collection {
+  id          String     @id @default(cuid())
+  name        String
+  icon        String?    @default("folder")
+  color       String?    @default("#6366f1")
+  parentId    String?
+  parent      Collection? @relation("CollectionHierarchy", fields: [parentId], references: [id])
+  children    Collection[] @relation("CollectionHierarchy")
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  description String?
+  isPublic    Boolean    @default(false)
+  sortOrder   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  bookmarks   Bookmark[]
+}
+
+model Bookmark {
+  id            String      @id @default(cuid())
+  url           String
+  title         String?
+  description   String?
+  domain        String?
+  favicon       String?
+  ogImage       String?
+  note          String?
+  isArchived    Boolean     @default(false)
+  isFavorite    Boolean     @default(false)
+  isRead        Boolean     @default(false)
+  textContent   String?     @default("")
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  collectionId  String?
+  collection    Collection? @relation(fields: [collectionId], references: [id])
+  tags          Tag[]       @relation("BookmarkTags")
+  highlights    Highlight[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  lastVisitedAt DateTime?
+}
+
+model Tag {
+  id        String     @id @default(cuid())
+  name      String
+  color     String?    @default("#6366f1")
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  bookmarks Bookmark[] @relation("BookmarkTags")
+  createdAt DateTime   @default(now())
+
+  @@unique([name, userId])
+}
+
+model Highlight {
+  id         String   @id @default(cuid())
+  text       String
+  color      String   @default("#ffeb3b")
+  note       String?
+  bookmarkId String
+  bookmark   Bookmark @relation(fields: [bookmarkId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model AiSettings {
+  id        String  @id @default(cuid())
+  provider  String  @default("ollama")
+  model     String  @default("llama3")
+  apiKey    String?
+  apiUrl    String? @default("http://localhost:11434")
+  autoTag   Boolean @default(false)
+  summarize Boolean @default(false)
+  userId    String  @unique
+  user      User    @relation(fields: [userId], references: [id])
+}
