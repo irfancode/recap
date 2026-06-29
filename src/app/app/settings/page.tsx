@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Settings, Database, Sparkles, Download, Upload, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,11 @@ export default function SettingsPage() {
   const [aiKey, setAiKey] = useState("")
   const [autoTag, setAutoTag] = useState(false)
   const [summarize, setSummarize] = useState(false)
+  const [serverUrl, setServerUrl] = useState("")
+
+  useEffect(() => {
+    setServerUrl(window.location.origin)
+  }, [])
 
   const saveAiSettings = async () => {
     try {
@@ -184,6 +189,28 @@ export default function SettingsPage() {
                 />
               </label>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              Bookmarklet (Safari/Any Browser)
+            </CardTitle>
+            <CardDescription>Drag this button to your bookmarks bar for one-click saving</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Works in any browser. Click the bookmarklet on any page to save it to Recap.
+            </p>
+            {serverUrl && (
+              <a
+                href={`javascript:(function(){var u=location.href;var t=document.title;var s='${serverUrl}';fetch(s+'/api/bookmarks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:u,title:t}),credentials:'include'}).then(function(r){if(r.ok)alert('Saved to Recap!');else alert('Save failed - make sure you are logged in')}).catch(function(){alert('Connection error')})})()`}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-primary text-primary-foreground px-6 py-3 text-sm font-medium shadow hover:bg-primary/90 transition-colors"
+              >
+                📥 Save to Recap
+              </a>
+            )}
           </CardContent>
         </Card>
       </div>
